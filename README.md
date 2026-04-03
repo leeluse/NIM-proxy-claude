@@ -1,148 +1,89 @@
-# NIM Proxy for Claude Code
+# 🚀 NIM Proxy for Claude Code (via LiteLLM)
 
-Claude Code 가 NVIDIA NIM(NVIDIA Inference Microservice) 백엔드를 사용할 수 있도록 해주는 경량 프록시 서버입니다. Anthropic API 형식을 OpenAI 호환 형식으로 변환하여 NIM 과 연동합니다.
+NVIDIA NIM(NVIDIA Inference Microservice) 백엔드를 사용하여 **Claude Code**를 무료(또는 저렴한 NIM 크레딧)로 사용할 수 있도록 해주는 통합 프록시 환경입니다.
 
-## 주요 기능
+이 레포지토리는 **LiteLLM Docker**를 활용하여 Anthropic API 요청을 NVIDIA NIM의 OpenAI 호환 API로 자동 변환하고 라우팅합니다.
 
-- **Anthropic ↔ OpenAI 형식 변환**: Claude Code 의 Anthropic API 요청을 NIM 이 이해할 수 있는 OpenAI 호환 형식으로 변환
-- **스트리밍 지원**: 실시간 스트리밍 응답으로 빠른 첫 토큰 제공
-- **자동 토큰 관리**: 컨텍스트 한도 초과 시 자동 잘라내기 (auto-truncation)
-- **도구 이름 단축**: NIM 의 64 자 도구 이름 제한 자동 처리
-- **Think 태그 파싱**: `<think>...</think>` 형식의 사고 과정 태그 처리
-- **다양한 모델 지원**: Qwen, DeepSeek, GLM 등 NIM 호환 모델 전체
+---
 
-## 설치
+## 🛠️ 주요 기능
 
-```bash
-# Python 3.11+ 필요
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-```
+- **LiteLLM 기반 프록시**: Docker 컨테이너를 통해 안정적으로 NIM 모델(Qwen, DeepSeek, GLM-5 등) 연동
+- **Claude Code 완벽 호환**: `claude-sonnet-4-6` 등 클로드가 기대하는 모델 별칭을 NIM 모델에 1:1 매핑
+- **통합 관리 도구 (`nim`)**: 시작, 테스트, 클로드 실행을 하나의 스크립트로 관리
+- **보안 설정**: `.env` 파일을 통해 API Key를 안전하게 관리 (`.gitignore` 포함)
+- **Windows 친화적**: Git Bash/WSL 환경에서 한 번의 명령어로 단축어(`claude-nim`) 등록 가능
 
-## 설정
+---
 
-`.env` 파일 설정:
+## 🏗️ 설치 및 설정
 
+### 1. 선결 조건
+- **Docker Desktop** 실행 중이어야 함
+- **Git Bash** (또는 WSL/Linux 셸) 권장
+
+### 2. API Key 설정
+`.env` 파일을 생성하고 본인의 NVIDIA API Key를 입력합니다. (이미 설정되어 있다면 패스)
 ```env
-# NVIDIA API 키 (필수)
-NVIDIA_API_KEY=your_api_key_here
-
-# NIM 베이스 URL (선택, 기본값: https://integrate.api.nvidia.com/v1)
-NIM_BASE_URL=https://integrate.api.nvidia.com/v1
-
-# 기본 모델 (선택)
-DEFAULT_MODEL=qwen/qwen3.5-397b-a17b
-
-# 서버 설정 (선택)
-HOST=0.0.0.0
-PORT=8082
-TIMEOUT=600
+NVIDIA_NIM_API_KEY=nvapi-your-key-here
 ```
 
-API 키는 [NVIDIA Build](https://build.nvidia.com) 에서 무료로 발급받을 수 있습니다.
+### 3. 모델 매핑 (`config.yaml`)
+`config.yaml`에서 Claude Code의 별칭을 원하는 NIM 모델로 자유롭게 변경할 수 있습니다.
+- `claude-sonnet-4-6` -> Qwen 3.5 (122B)
+- `claude-opus-4-6`   -> GLM-5
+- `claude-haiku-4-5`  -> Kimi K2.5
 
-## 빠른 시작 (권장)
+---
 
-`./agent` 스크립트를 사용하면 프록시 서버 시작과 Claude Code 실행을 한 번에 할 수 있습니다:
+## 🚀 사용법 (Quick Start)
 
+### 1단계: 프록시 서버 시작
 ```bash
-./agent
+$ ./nim start_proxy
 ```
 
-이 스크립트는 다음을 자동으로 수행합니다:
-
-1. NIM 프록시 서버가 실행 중인지 확인 (8082 포트)
-2. 서버가 꺼져 있으면 백그라운드에서 자동 시작
-3. Claude Code 를 NIM 프록시와 함께 실행
-
-## 수동 실행
-
-### 1 단계: 프록시 서버 시작
-
+### 2단계: 연결 테스트
+프록시가 정상적으로 작동하고 모델 목록이 나오는지 확인합니다.
 ```bash
-python server.py
+$ ./nim test
 ```
 
-또는 uvicorn 직접 사용:
-
+### 3단계: Claude Code 실행
 ```bash
-uvicorn server:app --host 0.0.0.0 --port 8082
+$ ./nim claude
 ```
 
-### 2 단계: Claude Code 실행
+---
 
-프록시 서버가 실행 중인지 확인한 후 다음 환경변수와 함께 Claude Code 를 사용하세요:
+## 💡 유용한 팁
 
+### 1. 어디서든 `claude-nim`으로 실행하기
+터미널 설정파일(`~/.bashrc`)에 별칭을 등록하면 현재 폴더가 아니더라도 실행 가능합니다.
 ```bash
-ANTHROPIC_BASE_URL=http://localhost:8082 ANTHROPIC_AUTH_TOKEN=dummy claude
+$ echo "alias claude-nim='$(pwd)/nim claude'" >> ~/.bashrc
+$ source ~/.bashrc
+
+# 이제 바로 실행 가능!
+$ claude-nim
 ```
 
-또는 Claude Code 내에서:
-
+### 2. 로그 확인 및 종료
 ```bash
-/claude ANTHROPIC_BASE_URL=http://localhost:8082 ANTHROPIC_AUTH_TOKEN=dummy
+$ ./nim logs    # 실시간 로그 확인 (Docker)
+$ ./nim stop    # 프록시 서버(컨테이너) 완전 종료
 ```
 
-## 윈도우에서 사용
+---
 
-가상환경 활성화:
+## 🏛️ 아키텍처 흐름
 
-```powershell
-.venv\Scripts\activate
-```
+1. **Claude Code** (Local CLI)
+2. ➔ **LiteLLM Proxy** (Docker Container: 4000 port)
+3. ➔ **NVIDIA NIM API** (https://integrate.api.nvidia.com/v1)
+4. ➔ **Open Source Models** (Qwen, DeepSeek V3, ...)
 
-서버 시작:
+---
 
-```powershell
-python server.py
-```
-
-Claude Code 실 (PowerShell):
-
-```powershell
-$env:ANTHROPIC_BASE_URL = "http://localhost:8082"
-$env:ANTHROPIC_AUTH_TOKEN = "dummy"
-claude
-```
-
-## 지원되는 모델
-
-| 모델                      | 컨텍스트 한도  |
-| ------------------------- | -------------- |
-| qwen/qwen3.5-397b-a17b    | 202,752 tokens |
-| deepseek-ai/deepseek-v3-1 | 160,000 tokens |
-| nvidia/glm-5-20b-chat     | 205,000 tokens |
-| z-ai/glm5                 | 205,000 tokens |
-
-`MODEL_MAP` 환경변수로 매핑을 커스터마이즈할 수 있습니다:
-
-```env
-MODEL_MAP={"claude-sonnet-4-5-20250101":"qwen/qwen3.5-397b-a17b"}
-```
-
-ㅌ
-
-## 아키텍처
-
-```
-Claude Code
-     │
-     ▼
- Anthropic API 형식
-     │
-     ▼
-┌─────────────────┐
-│  NIM Proxy      │
-│  proxy.py       │  ← 형식 변환 및 스트리밍
-└─────────────────┘
-     │
-     ▼
- OpenAI 호환 형식
-     │
-     ▼
- NVIDIA NIM (Llama, Qwen, DeepSeek, ...)
-```
-
-## 라이선스
-
-MIT
+## 📜 라이선스
+MIT License
