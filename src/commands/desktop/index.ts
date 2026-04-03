@@ -14,7 +14,7 @@ const desktop = {
   type: 'local-jsx',
   name: 'desktop',
   aliases: ['app'],
-  description: 'Continue the current session in Claude Desktop',
+  description: 'Claude Desktop 에서 현재 세션 계속하기',
   availability: ['claude-ai'],
   isEnabled: isSupportedPlatform,
   get isHidden() {

@@ -5,7 +5,7 @@ const session = {
   type: 'local-jsx',
   name: 'session',
   aliases: ['remote'],
-  description: 'Show remote session URL and QR code',
+  description: '원격 세션 URL 및 QR 코드 표시',
   isEnabled: () => getIsRemoteMode(),
   get isHidden() {
     return !getIsRemoteMode()

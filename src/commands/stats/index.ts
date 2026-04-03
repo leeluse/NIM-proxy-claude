@@ -3,7 +3,7 @@ import type { Command } from '../../commands.js'
 const stats = {
   type: 'local-jsx',
   name: 'stats',
-  description: 'Show your Claude Code usage statistics and activity',
+  description: 'Claude Code 사용 통계 및 활동 표시',
   load: () => import('./stats.js'),
 } satisfies Command
 

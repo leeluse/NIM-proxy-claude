@@ -237,6 +237,70 @@ function getGpt54MiniOption(): ModelOption {
   }
 }
 
+// NVIDIA NIM Models
+function getNimLlama405BOption(): ModelOption {
+  return {
+    value: 'llama-405b',
+    label: 'Llama 3.1 405B (NIM)',
+    description: 'Llama 3.1 405B · 현존 최강의 성능과 지능을 갖춘 모델',
+    descriptionForModel: 'NVIDIA NIM을 통해 제공되는 Llama 3.1 405B 모델 - 복잡한 문제 해결에 최적',
+  }
+}
+
+function getNimQwenCoderOption(): ModelOption {
+  return {
+    value: 'qwen-coder',
+    label: 'Qwen 2.5 Coder (NIM)',
+    description: 'Qwen 2.5 Coder 32B · 코딩 작업에 특화된 고속 모델',
+    descriptionForModel: 'Qwen 2.5 Coder 32B - 빠른 속도와 정확한 코드 생성이 특징',
+  }
+}
+
+function getNimDeepSeekR1Option(): ModelOption {
+  return {
+    value: 'deepseek-r1',
+    label: 'DeepSeek R1 (NIM)',
+    description: 'DeepSeek R1 · 논리적 추론과 사고 과정이 뛰어난 모델',
+    descriptionForModel: 'DeepSeek R1 Distill Qwen 32B - 복잡한 논리와 수학적 추론에 강점',
+  }
+}
+
+function getNimLlama70BOption(): ModelOption {
+  return {
+    value: 'llama-70b',
+    label: 'Llama 3.1 70B (NIM)',
+    description: 'Llama 3.1 70B · 속도와 지능의 완벽한 밸런스',
+    descriptionForModel: 'Llama 3.1 70B - Fast and intelligent for general coding',
+  }
+}
+
+function getNimMistralLargeOption(): ModelOption {
+  return {
+    value: 'mistral-large',
+    label: 'Mistral Large 2 (NIM)',
+    description: 'Mistral Large 2 · 간결하고 정확한 코드 생성',
+    descriptionForModel: 'Mistral Large 2 - Excellent coding performance from Mistral AI',
+  }
+}
+
+function getNimKimiOption(): ModelOption {
+  return {
+    value: 'kimi-25',
+    label: 'Kimi K2.5 (NIM)',
+    description: 'Kimi K2.5 · 긴 문맥 파악과 한국어에 강한 모델',
+    descriptionForModel: 'Kimi K2.5 - Best for long context and Korean language tasks',
+  }
+}
+
+function getNimGLMOption(): ModelOption {
+  return {
+    value: 'glm-4',
+    label: 'GLM-4 (NIM)',
+    description: 'GLM-4 · 다재다능한 차세대 범용 인공지능',
+    descriptionForModel: 'GLM-4 - Highly capable multi-purpose model',
+  }
+}
+
 function getMaxOpusOption(fastMode = false): ModelOption {
   return {
     value: 'opus',
@@ -298,120 +362,16 @@ function getOpusPlanOption(): ModelOption {
 // @[MODEL LAUNCH]: Update the model picker lists below to include/reorder options for the new model.
 // Each user tier (ant, Max/Team Premium, Pro/Team Standard/Enterprise, PAYG 1P, PAYG 3P) has its own list.
 function getModelOptionsBase(fastMode = false): ModelOption[] {
-  if (process.env.USER_TYPE === 'ant') {
-    // Build options from antModels config
-    const antModelOptions: ModelOption[] = getAntModels().map(m => ({
-      value: m.alias,
-      label: m.label,
-      description: m.description ?? `[ANT-ONLY] ${m.label} (${m.model})`,
-    }))
-
-    return [
-      getDefaultOptionForUser(),
-      ...antModelOptions,
-      getMergedOpus1MOption(fastMode),
-      getSonnet46Option(),
-      getSonnet46_1MOption(),
-      getHaiku45Option(),
-    ]
-  }
-
-  // Codex subscribers get OpenAI model options
-  if (isCodexSubscriber()) {
-    return [
-      getDefaultOptionForUser(),
-      getGpt54Option(),
-      getGpt53CodexOption(),
-      getGpt54MiniOption(),
-    ]
-  }
-
-  if (isClaudeAISubscriber()) {
-    if (isMaxSubscriber() || isTeamPremiumSubscriber()) {
-      // Max and Team Premium users: Opus is default, show Sonnet as alternative
-      const premiumOptions = [getDefaultOptionForUser(fastMode)]
-      if (!isOpus1mMergeEnabled() && checkOpus1mAccess()) {
-        premiumOptions.push(getMaxOpus46_1MOption(fastMode))
-      }
-
-      premiumOptions.push(MaxSonnet46Option)
-      if (checkSonnet1mAccess()) {
-        premiumOptions.push(getMaxSonnet46_1MOption())
-      }
-
-      premiumOptions.push(MaxHaiku45Option)
-      return premiumOptions
-    }
-
-    // Pro/Team Standard/Enterprise users: Sonnet is default, show Opus as alternative
-    const standardOptions = [getDefaultOptionForUser(fastMode)]
-    if (checkSonnet1mAccess()) {
-      standardOptions.push(getMaxSonnet46_1MOption())
-    }
-
-    if (isOpus1mMergeEnabled()) {
-      standardOptions.push(getMergedOpus1MOption(fastMode))
-    } else {
-      standardOptions.push(getMaxOpusOption(fastMode))
-      if (checkOpus1mAccess()) {
-        standardOptions.push(getMaxOpus46_1MOption(fastMode))
-      }
-    }
-
-    standardOptions.push(MaxHaiku45Option)
-    return standardOptions
-  }
-
-  // PAYG 1P API: Default (Sonnet) + Sonnet 1M + Opus 4.6 + Opus 1M + Haiku
-  if (getAPIProvider() === 'firstParty') {
-    const payg1POptions = [getDefaultOptionForUser(fastMode)]
-    if (checkSonnet1mAccess()) {
-      payg1POptions.push(getSonnet46_1MOption())
-    }
-    if (isOpus1mMergeEnabled()) {
-      payg1POptions.push(getMergedOpus1MOption(fastMode))
-    } else {
-      payg1POptions.push(getOpus46Option(fastMode))
-      if (checkOpus1mAccess()) {
-        payg1POptions.push(getOpus46_1MOption(fastMode))
-      }
-    }
-    payg1POptions.push(getHaiku45Option())
-    return payg1POptions
-  }
-
-  // PAYG 3P: Default (Sonnet 4.5) + Sonnet (3P custom) or Sonnet 4.6/1M + Opus (3P custom) or Opus 4.1/Opus 4.6/Opus1M + Haiku + Opus 4.1
-  const payg3pOptions = [getDefaultOptionForUser(fastMode)]
-
-  const customSonnet = getCustomSonnetOption()
-  if (customSonnet !== undefined) {
-    payg3pOptions.push(customSonnet)
-  } else {
-    // Add Sonnet 4.6 since Sonnet 4.5 is the default
-    payg3pOptions.push(getSonnet46Option())
-    if (checkSonnet1mAccess()) {
-      payg3pOptions.push(getSonnet46_1MOption())
-    }
-  }
-
-  const customOpus = getCustomOpusOption()
-  if (customOpus !== undefined) {
-    payg3pOptions.push(customOpus)
-  } else {
-    // Add Opus 4.1, Opus 4.6 and Opus 4.6 1M
-    payg3pOptions.push(getOpus41Option()) // This is the default opus
-    payg3pOptions.push(getOpus46Option(fastMode))
-    if (checkOpus1mAccess()) {
-      payg3pOptions.push(getOpus46_1MOption(fastMode))
-    }
-  }
-  const customHaiku = getCustomHaikuOption()
-  if (customHaiku !== undefined) {
-    payg3pOptions.push(customHaiku)
-  } else {
-    payg3pOptions.push(getHaikuOption())
-  }
-  return payg3pOptions
+  // Only display NVIDIA NIM models
+  return [
+    getNimLlama405BOption(),
+    getNimLlama70BOption(),
+    getNimQwenCoderOption(),
+    getNimDeepSeekR1Option(),
+    getNimMistralLargeOption(),
+    getNimKimiOption(),
+    getNimGLMOption(),
+  ]
 }
 
 // @[MODEL LAUNCH]: Add the new model ID to the appropriate family pattern below
@@ -499,68 +459,7 @@ function getKnownModelOption(model: string): ModelOption | null {
 
 export function getModelOptions(fastMode = false): ModelOption[] {
   const options = getModelOptionsBase(fastMode)
-
-  // Add the custom model from the ANTHROPIC_CUSTOM_MODEL_OPTION env var
-  const envCustomModel = process.env.ANTHROPIC_CUSTOM_MODEL_OPTION
-  if (
-    envCustomModel &&
-    !options.some(existing => existing.value === envCustomModel)
-  ) {
-    options.push({
-      value: envCustomModel,
-      label: process.env.ANTHROPIC_CUSTOM_MODEL_OPTION_NAME ?? envCustomModel,
-      description:
-        process.env.ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION ??
-        `Custom model (${envCustomModel})`,
-    })
-  }
-
-  // Append additional model options fetched during bootstrap
-  for (const opt of getGlobalConfig().additionalModelOptionsCache ?? []) {
-    if (!options.some(existing => existing.value === opt.value)) {
-      options.push(opt)
-    }
-  }
-
-  // Add custom model from either the current model value or the initial one
-  // if it is not already in the options.
-  let customModel: ModelSetting = null
-  const currentMainLoopModel = getUserSpecifiedModelSetting()
-  const initialMainLoopModel = getInitialMainLoopModel()
-  if (currentMainLoopModel !== undefined && currentMainLoopModel !== null) {
-    customModel = currentMainLoopModel
-  } else if (initialMainLoopModel !== null) {
-    customModel = initialMainLoopModel
-  }
-  if (customModel === null || options.some(opt => opt.value === customModel)) {
-    return filterModelOptionsByAllowlist(options)
-  } else if (customModel === 'opusplan') {
-    return filterModelOptionsByAllowlist([...options, getOpusPlanOption()])
-  } else if (customModel === 'opus' && getAPIProvider() === 'firstParty') {
-    return filterModelOptionsByAllowlist([
-      ...options,
-      getMaxOpusOption(fastMode),
-    ])
-  } else if (customModel === 'opus[1m]' && getAPIProvider() === 'firstParty') {
-    return filterModelOptionsByAllowlist([
-      ...options,
-      getMergedOpus1MOption(fastMode),
-    ])
-  } else {
-    // Try to show a human-readable label for known Anthropic models, with an
-    // upgrade hint if the alias now resolves to a newer version.
-    const knownOption = getKnownModelOption(customModel)
-    if (knownOption) {
-      options.push(knownOption)
-    } else {
-      options.push({
-        value: customModel,
-        label: customModel,
-        description: 'Custom model',
-      })
-    }
-    return filterModelOptionsByAllowlist(options)
-  }
+  return filterModelOptionsByAllowlist(options)
 }
 
 /**

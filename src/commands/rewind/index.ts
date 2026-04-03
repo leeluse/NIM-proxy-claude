@@ -1,7 +1,7 @@
 import type { Command } from '../../commands.js'
 
 const rewind = {
-  description: `Restore the code and/or conversation to a previous point`,
+  description: '코드 및/또는 대화를 이전 시점으로 복원',
   name: 'rewind',
   aliases: ['checkpoint'],
   argumentHint: '',

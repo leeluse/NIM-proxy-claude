@@ -6,7 +6,7 @@ export default {
   type: 'local-jsx',
   name: 'model',
   get description() {
-    return `Set the AI model for Claude Code (currently ${renderModelName(getMainLoopModel())})`
+    return `Claude Code 에 사용할 AI 모델 설정 (현재 ${renderModelName(getMainLoopModel())})`
   },
   argumentHint: '[model]',
   get immediate() {

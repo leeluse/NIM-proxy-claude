@@ -45,3 +45,21 @@ bun run dev
 ## 빌드 시스템
 
 - scripts/build.ts는 빌드 스크립트이자 기능 플래그 번들러입니다. 기능 플래그는 빌드 인수(예: `--feature=ULTRAPLAN`) 또는 `--feature-set=dev-full`과 같은 프리셋을 통해 설정할 수 있습니다(자세한 내용은 README 참조).
+
+
+
+## CLAUDE.md 핵심
+### 리서치 워크스페이스 - 💡 리서치 워크스페이스를 구성할 때 deep-research 플러그인을 활용하면 별도의 Skills 제작 없이 바로 멀티에이전트 리서치가 가능합니다. 콘텐츠 작업에는 docs-guide로 공식 문서 기반의 정확한 자료를 확보할 수 있습니다.
+CLAUDE.md 핵심:
+  - 출처 없는 주장 금지
+  - 모든 정보에 출처 등급 표기 (A~E)
+  - 리서치 결과는 /reports 폴더에 자동 저장
+
+폴더 구조:
+  inbox/      → 참고 자료 보관
+  reports/    → 완성된 리서치
+  sources/    → 출처 모음
+
+Skills:
+  /research [주제]  → 웹 검색 → 정리 → 저장
+  /summary [파일]   → 문서 요약

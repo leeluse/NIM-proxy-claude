@@ -3,7 +3,7 @@ import { isKeybindingCustomizationEnabled } from '../../keybindings/loadUserBind
 
 const keybindings = {
   name: 'keybindings',
-  description: 'Open or create your keybindings configuration file',
+  description: '단축키 설정 파일 열기 또는 생성',
   isEnabled: () => isKeybindingCustomizationEnabled(),
   supportsNonInteractive: false,
   type: 'local',

@@ -13,7 +13,7 @@ const bridge = {
   type: 'local-jsx',
   name: 'remote-control',
   aliases: ['rc'],
-  description: 'Connect this terminal for remote-control sessions',
+  description: '원격 세션 URL 및 QR 코드 표시',
   argumentHint: '[name]',
   isEnabled,
   get isHidden() {

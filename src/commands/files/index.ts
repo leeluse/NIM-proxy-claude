@@ -3,7 +3,7 @@ import type { Command } from '../../commands.js'
 const files = {
   type: 'local',
   name: 'files',
-  description: 'List all files currently in context',
+  description: '현재 컨텍스트에 있는 모든 파일 나열',
   isEnabled: () => process.env.USER_TYPE === 'ant',
   supportsNonInteractive: true,
   load: () => import('./files.js'),

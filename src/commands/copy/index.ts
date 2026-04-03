@@ -8,7 +8,7 @@ const copy = {
   type: 'local-jsx',
   name: 'copy',
   description:
-    "Copy Claude's last response to clipboard (or /copy N for the Nth-latest)",
+    "Claude 의 마지막 응답을 클립보드에 복사 (/copy N 으로 N 번째 최신 응답 복사)",
   load: () => import('./copy.js'),
 } satisfies Command
 

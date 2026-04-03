@@ -3,7 +3,7 @@ import type { Command } from '../../commands.js'
 
 const command: Command = {
   name: 'chrome',
-  description: 'Claude in Chrome (Beta) settings',
+  description: 'Claude in Chrome(베타) 설정',
   availability: ['claude-ai'],
   isEnabled: () => !getIsNonInteractiveSession(),
   type: 'local-jsx',

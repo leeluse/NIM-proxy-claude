@@ -4,7 +4,7 @@ const mobile = {
   type: 'local-jsx',
   name: 'mobile',
   aliases: ['ios', 'android'],
-  description: 'Show QR code to download the Claude mobile app',
+  description: 'Claude 모바일 앱 다운로드용 QR 코드 표시',
   load: () => import('./mobile.js'),
 } satisfies Command
 

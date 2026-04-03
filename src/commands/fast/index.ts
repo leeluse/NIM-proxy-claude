@@ -9,7 +9,7 @@ const fast = {
   type: 'local-jsx',
   name: 'fast',
   get description() {
-    return `Toggle fast mode (${FAST_MODE_MODEL_DISPLAY} only)`
+    return `빠른 모드 토글 (${FAST_MODE_MODEL_DISPLAY} 전용)`
   },
   availability: ['claude-ai', 'console'],
   isEnabled: () => isFastModeEnabled(),

@@ -7,7 +7,7 @@ const feedback = {
   aliases: ['bug'],
   type: 'local-jsx',
   name: 'feedback',
-  description: `Submit feedback about Claude Code`,
+  description: 'Claude Code 에 대한 피드백 제출',
   argumentHint: '[report]',
   isEnabled: () =>
     !(
