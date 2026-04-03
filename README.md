@@ -150,17 +150,18 @@ free-code
 
 ### NVIDIA NIM (via LiteLLM) -- 강력 추천
 
-NVIDIA NIM을 LiteLLM 프록시와 연동하여 오픈 소어 모델(Qwen, GLM 등)을 Claude Code에서 사용할 수 있습니다.
+NVIDIA NIM을 LiteLLM 프록시와 연동하여 오픈 소스 모델(Qwen, GLM 등)을 Claude Code에서 사용할 수 있습니다.
 
 1. 프록시 서버 실행 (상위 폴더의 `nim` 도구 사용)
-2. `.env` 파일 설정:
+2. `.env` 파일 설정 (**따옴표 닫기** 주의!):
 ```env
-ANTHROPIC_BASE_URL="http://localhost:4000"
+ANTHROPIC_BASE_URL="http://127.0.0.1:4000"
 ANTHROPIC_API_KEY="sk-litellm-local"
 ANTHROPIC_MODEL="claude-sonnet-4-6"
 ```
+> **팁:** Windows 환경에서는 `localhost`보다 `127.0.0.1`을 사용하는 것이 네트워크 연결에 더 안정적입니다.
 
-위 설정을 완료하면 별도의 인자 없이 `./cli.exe` 실행만으로 NIM 모델을 사용할 수 있습니다.
+위 설정을 완료했는데도 연결 오류(`ConnectionRefused`)가 발생한다면, 아래의 [단축 명령어 설정](#단축-명령어-설정) 섹션을 확인하세요.
 
 ### 제공자 선택 요약
 
@@ -251,6 +252,27 @@ bun run dev
 | `ANTHROPIC_DEFAULT_HAIKU_MODEL` | 사용자 정의 Haiku 모델 ID |
 | `CLAUDE_CODE_OAUTH_TOKEN` | 환경 변수를 통한 OAuth 토큰 |
 | `CLAUDE_CODE_API_KEY_HELPER_TTL_MS` | API 키 헬퍼 캐시 TTL |
+
+---
+
+## 단축 명령어 설정 (강력 추천)
+
+컴파일된 바이너리(`cli.exe`)가 `.env` 파일을 제대로 로드하지 못할 경우, 환경 변수를 직접 주입하여 실행하는 것이 가장 확실합니다. 매번 길게 입력하지 않도록 `~/.bashrc` (Git Bash용)에 등록해 두세요.
+
+### 1단계: .bashrc에 알리어스 등록
+터미널에 아래 명령어를 복사해서 입력하세요 (하나의 긴 줄입니다):
+
+```bash
+echo "alias claude='ANTHROPIC_BASE_URL=\"http://127.0.0.1:4000\" ANTHROPIC_API_KEY=\"sk-litellm-local\" ANTHROPIC_MODEL=\"claude-sonnet-4-6\" $(pwd)/cli.exe'" >> ~/.bashrc && source ~/.bashrc
+```
+
+### 2단계: 사용하기
+이제 어느 폴더에서든 단 한 단어만 입력하면 됩니다:
+```bash
+claude
+```
+
+> **참고:** `127.0.0.1:4000` 주소는 프록시 서버가 실행 중인 주소와 일치해야 합니다.
 
 ---
 
